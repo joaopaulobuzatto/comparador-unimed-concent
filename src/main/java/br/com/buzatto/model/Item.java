@@ -4,34 +4,34 @@ import java.util.Objects;
 
 public class Item {
 
-    private Long requisicao;
-    private Long guia;
-    private Long carteirinha;
+    private String requisicao;
+    private String guia;
+    private String carteirinha;
     private String beneficiario;
-    private Long codigo;
+    private String codigo;
     private String descricao;
 
-    public Long getRequisicao() {
+    public String getRequisicao() {
         return requisicao;
     }
 
-    public void setRequisicao(Long requisicao) {
+    public void setRequisicao(String requisicao) {
         this.requisicao = requisicao;
     }
 
-    public Long getGuia() {
+    public String getGuia() {
         return guia;
     }
 
-    public void setGuia(Long guia) {
+    public void setGuia(String guia) {
         this.guia = guia;
     }
 
-    public Long getCarteirinha() {
+    public String getCarteirinha() {
         return carteirinha;
     }
 
-    public void setCarteirinha(Long carteirinha) {
+    public void setCarteirinha(String carteirinha) {
         this.carteirinha = carteirinha;
     }
 
@@ -43,11 +43,11 @@ public class Item {
         this.beneficiario = beneficiario;
     }
 
-    public Long getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 

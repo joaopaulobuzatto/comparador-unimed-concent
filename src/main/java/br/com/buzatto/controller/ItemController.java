@@ -21,8 +21,9 @@ public class ItemController {
     }
 
     @PostMapping("/upload-itens-data")
-    public ResponseEntity<?> uploadItensData(@RequestParam("file") MultipartFile file) {
-        this.itemService.readItens(file);
+    public ResponseEntity<?> uploadItensData(@RequestParam("fileUnimed") MultipartFile fileUnimed,
+                                             @RequestParam("fileConcent") MultipartFile fileConcent) {
+        this.itemService.readItens(fileUnimed, fileConcent);
         return ResponseEntity
                 .ok(Map.of("Message", " Itens data uploaded and readed successfully"));
     }
