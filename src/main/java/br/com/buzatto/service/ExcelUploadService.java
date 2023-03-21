@@ -72,7 +72,7 @@ public class ExcelUploadService {
                 while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
                     switch (cellIndex) {
-                        case 4 -> item.setBeneficiario(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        case 4 -> item.setBeneficiario(dataFormatter.formatCellValue(row.getCell(cellIndex)).trim());
                         case 9 -> item.setGuia(dataFormatter.formatCellValue(row.getCell(cellIndex)));
                         case 10 -> item.setCarteirinha(dataFormatter.formatCellValue(row.getCell(cellIndex)));
                         case 11 -> item.setCodigo(dataFormatter.formatCellValue(row.getCell(cellIndex)));

@@ -2,6 +2,7 @@ package br.com.buzatto.service;
 
 import br.com.buzatto.model.Item;
 import br.com.buzatto.model.Resultado;
+import br.com.buzatto.util.MapCodigosPorExame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,19 @@ public class ItemService {
                             && itemConsulta.getGuia().equals(itemOrigem.getGuia()))
                     .findFirst().orElse(null);
             if (itemConsultaPorChaveItemOrigem == null) {
-                itens.add(itemOrigem);
+                if (MapCodigosPorExame.getCodigosPorExame().containsKey(itemOrigem.getDescricao())) {
+                    for (String codigo : MapCodigosPorExame.getCodigosPorExame().get(itemOrigem.getDescricao())) {
+                        if (itemConsultaPorChaveItemOrigem == null) {
+                            itemConsultaPorChaveItemOrigem = itensConsulta.stream()
+                                    .filter(itemConsulta -> itemConsulta.getCodigo().equals(codigo)
+                                            && itemConsulta.getGuia().equals(itemOrigem.getGuia()))
+                                    .findFirst().orElse(null);
+                        }
+                    }
+                }
+                if (itemConsultaPorChaveItemOrigem == null) {
+                    itens.add(itemOrigem);
+                }
             }
         }
         return itens;
