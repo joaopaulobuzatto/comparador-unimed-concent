@@ -1,7 +1,7 @@
 package br.com.buzatto.service;
 
 import br.com.buzatto.model.Item;
-import br.com.buzatto.model.Resultado;
+import br.com.buzatto.model.Response;
 import br.com.buzatto.util.MapCodigosPorExame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,25 +17,25 @@ public class ItemService {
 
     private final Logger log = LoggerFactory.getLogger(ItemService.class);
 
-    public Resultado readItens(MultipartFile fileUnimed, MultipartFile fileConcent) {
+    public Response readItens(MultipartFile fileUnimed, MultipartFile fileConcent) {
         List<Item> itensUnimed = getItems(fileUnimed, true, false);
         List<Item> itensConcent = getItems(fileConcent, false, true);
 
         List<Item> itensDivergenteOrigemUnimed = getItemsDivergente(itensUnimed, itensConcent, true, false);
         List<Item> itensDivergenteOrigemConcent = getItemsDivergente(itensUnimed, itensConcent, false, true);
 
-        Resultado resultado = new Resultado();
-        resultado.setTotalItensUnimedProcessados((long) itensUnimed.size());
-        resultado.setTotalItensUnimedComDivergencia((long) itensDivergenteOrigemUnimed.size());
-        resultado.setTotalItensUnimedComSucesso(resultado.getTotalItensUnimedProcessados() - resultado.getTotalItensUnimedComDivergencia());
-        resultado.setItensDivergenteOrigemUnimed(itensDivergenteOrigemUnimed);
+        Response response = new Response();
+        response.setTotalItensUnimedProcessados((long) itensUnimed.size());
+        response.setTotalItensUnimedComDivergencia((long) itensDivergenteOrigemUnimed.size());
+        response.setTotalItensUnimedComSucesso(response.getTotalItensUnimedProcessados() - response.getTotalItensUnimedComDivergencia());
+        response.setItensDivergenteOrigemUnimed(itensDivergenteOrigemUnimed);
 
-        resultado.setTotalItensConcentProcessados((long) itensConcent.size());
-        resultado.setTotalItensConcentComDivergencia((long) itensDivergenteOrigemConcent.size());
-        resultado.setTotalItensConcentComSucesso(resultado.getTotalItensConcentProcessados() - resultado.getTotalItensConcentComDivergencia());
-        resultado.setItensDivergenteOrigemConcent(itensDivergenteOrigemConcent);
+        response.setTotalItensConcentProcessados((long) itensConcent.size());
+        response.setTotalItensConcentComDivergencia((long) itensDivergenteOrigemConcent.size());
+        response.setTotalItensConcentComSucesso(response.getTotalItensConcentProcessados() - response.getTotalItensConcentComDivergencia());
+        response.setItensDivergenteOrigemConcent(itensDivergenteOrigemConcent);
 
-        return resultado;
+        return response;
     }
 
     private List<Item> getItemsDivergente(List<Item> itensUnimed, List<Item> itensConcent, boolean isOrigemUnimed, boolean isOrigemConcent) {

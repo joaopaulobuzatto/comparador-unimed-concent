@@ -3,7 +3,7 @@ package br.com.buzatto.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Resultado {
+public class Response {
 
     private Long totalItensUnimedProcessados = 0L;
     private Long totalItensUnimedComSucesso = 0L;

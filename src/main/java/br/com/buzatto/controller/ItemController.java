@@ -1,6 +1,6 @@
 package br.com.buzatto.controller;
 
-import br.com.buzatto.model.Resultado;
+import br.com.buzatto.model.Response;
 import br.com.buzatto.service.ItemService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +18,9 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @PostMapping("/upload-itens-data")
-    public Resultado uploadItensData(@RequestParam("fileUnimed") MultipartFile fileUnimed,
-                                     @RequestParam("fileConcent") MultipartFile fileConcent) {
+    @PostMapping("/read-itens-from-files")
+    public Response readItensFromFiles(@RequestParam("fileUnimed") MultipartFile fileUnimed,
+                                       @RequestParam("fileConcent") MultipartFile fileConcent) {
         return this.itemService.readItens(fileUnimed, fileConcent);
     }
 }
