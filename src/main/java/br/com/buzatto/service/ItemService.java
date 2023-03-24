@@ -17,7 +17,7 @@ public class ItemService {
 
     private final Logger log = LoggerFactory.getLogger(ItemService.class);
 
-    public Response readItens(MultipartFile fileUnimed, MultipartFile fileConcent) {
+    public Response proccessFiles(MultipartFile fileUnimed, MultipartFile fileConcent) {
         List<Item> itensUnimed = getItems(fileUnimed, true, false);
         List<Item> itensConcent = getItems(fileConcent, false, true);
 

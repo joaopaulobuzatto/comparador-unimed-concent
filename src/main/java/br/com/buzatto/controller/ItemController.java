@@ -18,9 +18,9 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @PostMapping("/read-itens-from-files")
-    public Response readItensFromFiles(@RequestParam("fileUnimed") MultipartFile fileUnimed,
-                                       @RequestParam("fileConcent") MultipartFile fileConcent) {
-        return this.itemService.readItens(fileUnimed, fileConcent);
+    @PostMapping("/proccess-files")
+    public Response proccessFiles(@RequestParam("fileUnimed") MultipartFile fileUnimed,
+                                  @RequestParam("fileConcent") MultipartFile fileConcent) {
+        return this.itemService.proccessFiles(fileUnimed, fileConcent);
     }
 }
