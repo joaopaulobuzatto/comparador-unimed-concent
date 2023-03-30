@@ -1,8 +1,8 @@
 package br.com.buzatto.service;
 
+import br.com.buzatto.enums.Exame;
 import br.com.buzatto.model.Item;
 import br.com.buzatto.model.Response;
-import br.com.buzatto.util.MapCodigosPorExame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -56,13 +56,15 @@ public class ItemService {
                             && itemConsulta.getGuia().equals(itemOrigem.getGuia()))
                     .findFirst().orElse(null);
             if (itemConsultaPorChaveItemOrigem == null) {
-                if (MapCodigosPorExame.getCodigosPorExame().containsKey(itemOrigem.getDescricao())) {
-                    for (String codigo : MapCodigosPorExame.getCodigosPorExame().get(itemOrigem.getDescricao())) {
-                        if (itemConsultaPorChaveItemOrigem == null) {
-                            itemConsultaPorChaveItemOrigem = itensConsulta.stream()
-                                    .filter(itemConsulta -> itemConsulta.getCodigo().equals(codigo)
-                                            && itemConsulta.getGuia().equals(itemOrigem.getGuia()))
-                                    .findFirst().orElse(null);
+                for (Exame exame : Exame.values()) {
+                    if (exame.getCodigo().equals(itemOrigem.getCodigo())) {
+                        for (String variacao : exame.getVariacoes()) {
+                            if (itemConsultaPorChaveItemOrigem == null) {
+                                itemConsultaPorChaveItemOrigem = itensConsulta.stream()
+                                        .filter(itemConsulta -> itemConsulta.getCodigo().equals(variacao)
+                                                && itemConsulta.getGuia().equals(itemOrigem.getGuia()))
+                                        .findFirst().orElse(null);
+                            }
                         }
                     }
                 }
