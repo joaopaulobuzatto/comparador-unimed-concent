@@ -10,6 +10,7 @@ public class Item {
     private String beneficiario;
     private String codigo;
     private String descricao;
+    private String quantidade;
 
     public String getRequisicao() {
         return requisicao;
@@ -59,15 +60,24 @@ public class Item {
         this.descricao = descricao;
     }
 
+    public String getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(String quantidade) {
+        this.quantidade = quantidade;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
-                "requisicao=" + requisicao +
-                ", guia=" + guia +
-                ", carteirinha=" + carteirinha +
+                "requisicao='" + requisicao + '\'' +
+                ", guia='" + guia + '\'' +
+                ", carteirinha='" + carteirinha + '\'' +
                 ", beneficiario='" + beneficiario + '\'' +
-                ", codigo=" + codigo +
+                ", codigo='" + codigo + '\'' +
                 ", descricao='" + descricao + '\'' +
+                ", quantidade='" + quantidade + '\'' +
                 '}';
     }
 

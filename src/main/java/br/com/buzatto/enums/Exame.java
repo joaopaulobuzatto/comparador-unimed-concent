@@ -1,5 +1,7 @@
 package br.com.buzatto.enums;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public enum Exame {
@@ -42,6 +44,21 @@ public enum Exame {
 
     public List<String> getVariacoes() {
         return variacoes;
+    }
+
+    public static Exame valueOfByCodigo(String codigo) {
+        return Arrays.stream(values())
+                .filter(exame -> exame.getCodigo().equals(codigo))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static List<String> getVariacoesByCodigo(String codigo) {
+        Exame exame = valueOfByCodigo(codigo);
+        if (exame == null) {
+            return new ArrayList<>();
+        }
+        return exame.getVariacoes();
     }
 
     @Override

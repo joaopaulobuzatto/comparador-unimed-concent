@@ -41,6 +41,7 @@ public class ExcelUploadService {
                         case 4 -> item.setBeneficiario(dataFormatter.formatCellValue(row.getCell(cellIndex)));
                         case 9 -> item.setCodigo(dataFormatter.formatCellValue(row.getCell(cellIndex)));
                         case 10 -> item.setDescricao(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        case 11 -> item.setQuantidade(dataFormatter.formatCellValue(row.getCell(cellIndex)));
                         default -> {
                         }
                     }
@@ -78,6 +79,7 @@ public class ExcelUploadService {
                         case 10 -> item.setCarteirinha(dataFormatter.formatCellValue(row.getCell(cellIndex)));
                         case 11 -> item.setCodigo(dataFormatter.formatCellValue(row.getCell(cellIndex)));
                         case 12 -> item.setDescricao(dataFormatter.formatCellValue(row.getCell(cellIndex)).trim());
+                        case 14 -> item.setQuantidade(dataFormatter.formatCellValue(row.getCell(cellIndex)));
                         default -> {
                         }
                     }

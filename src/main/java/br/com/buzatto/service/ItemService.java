@@ -17,12 +17,15 @@ public class ItemService {
 
     private final Logger log = LoggerFactory.getLogger(ItemService.class);
 
-    public Response proccessFiles(MultipartFile fileUnimed, MultipartFile fileConcent) {
-        List<Item> itensUnimed = getItems(fileUnimed, true, false);
-        List<Item> itensConcent = getItems(fileConcent, false, true);
+    private static final List<String> CODIGOS_OBRIGATORIO_CONFERENCIA_MANUAL = List.of("40307255", "40307263");
 
-        List<Item> itensDivergenteOrigemUnimed = getItemsDivergente(itensUnimed, itensConcent, true, false);
-        List<Item> itensDivergenteOrigemConcent = getItemsDivergente(itensUnimed, itensConcent, false, true);
+    public Response proccessFiles(MultipartFile fileUnimed, MultipartFile fileConcent) {
+        log.info("proccess files");
+        List<Item> itensUnimed = getItens(fileUnimed, true, false);
+        List<Item> itensConcent = getItens(fileConcent, false, true);
+
+        List<Item> itensDivergenteOrigemUnimed = getItensDivergente(itensUnimed, itensConcent, true, false);
+        List<Item> itensDivergenteOrigemConcent = getItensDivergente(itensUnimed, itensConcent, false, true);
 
         Response response = new Response();
         response.setTotalItensUnimedProcessados((long) itensUnimed.size());
@@ -38,37 +41,39 @@ public class ItemService {
         return response;
     }
 
-    private List<Item> getItemsDivergente(List<Item> itensUnimed, List<Item> itensConcent, boolean isOrigemUnimed, boolean isOrigemConcent) {
+    private List<Item> getItensDivergente(List<Item> itensUnimed, List<Item> itensConcent, boolean isOrigemUnimed, boolean isOrigemConcent) {
+        log.info("get itens divergente");
         List<Item> itensDivergente = new ArrayList<>();
         if (isOrigemUnimed) {
-            itensDivergente = getItemsDivergente(itensUnimed, itensConcent);
+            itensDivergente = getItensDivergente(itensUnimed, itensConcent);
         } else if (isOrigemConcent) {
-            itensDivergente = getItemsDivergente(itensConcent, itensUnimed);
+            itensDivergente = getItensDivergente(itensConcent, itensUnimed);
         }
         return itensDivergente;
     }
 
-    private List<Item> getItemsDivergente(List<Item> itensOrigem, List<Item> itensConsulta) {
+    public List<Item> getItensDivergente(List<Item> itensOrigem, List<Item> itensConsulta) {
+        log.info("get itens divergente");
         List<Item> itens = new ArrayList<>();
         for (Item itemOrigem : itensOrigem) {
-            Item itemConsultaPorChaveItemOrigem = itensConsulta.stream()
-                    .filter(itemConsulta -> itemConsulta.getCodigo().equals(itemOrigem.getCodigo())
-                            && itemConsulta.getGuia().equals(itemOrigem.getGuia()))
-                    .findFirst().orElse(null);
-            if (itemConsultaPorChaveItemOrigem == null) {
-                for (Exame exame : Exame.values()) {
-                    if (exame.getCodigo().equals(itemOrigem.getCodigo())) {
-                        for (String variacao : exame.getVariacoes()) {
-                            if (itemConsultaPorChaveItemOrigem == null) {
-                                itemConsultaPorChaveItemOrigem = itensConsulta.stream()
-                                        .filter(itemConsulta -> itemConsulta.getCodigo().equals(variacao)
-                                                && itemConsulta.getGuia().equals(itemOrigem.getGuia()))
-                                        .findFirst().orElse(null);
-                            }
+            if (CODIGOS_OBRIGATORIO_CONFERENCIA_MANUAL.contains(itemOrigem.getCodigo())) {
+                itens.add(itemOrigem);
+            } else {
+                boolean itemOrigemExisteNosItensConsulta = itensConsulta.stream()
+                        .anyMatch(itemConsulta -> itemConsulta.getCodigo().equals(itemOrigem.getCodigo())
+                                && itemConsulta.getGuia().equals(itemOrigem.getGuia()));
+
+                if (!itemOrigemExisteNosItensConsulta) {
+                    for (String variacao : Exame.getVariacoesByCodigo(itemOrigem.getCodigo())) {
+                        if (!itemOrigemExisteNosItensConsulta) {
+                            itemOrigemExisteNosItensConsulta = itensConsulta.stream()
+                                    .anyMatch(itemConsulta -> itemConsulta.getCodigo().equals(variacao)
+                                            && itemConsulta.getGuia().equals(itemOrigem.getGuia()));
                         }
                     }
                 }
-                if (itemConsultaPorChaveItemOrigem == null) {
+
+                if (!itemOrigemExisteNosItensConsulta) {
                     itens.add(itemOrigem);
                 }
             }
@@ -76,7 +81,8 @@ public class ItemService {
         return itens;
     }
 
-    private List<Item> getItems(MultipartFile file, boolean isUnimed, boolean isConcent) {
+    private List<Item> getItens(MultipartFile file, boolean isUnimed, boolean isConcent) {
+        log.info("get itens");
         List<Item> itens = new ArrayList<>();
         if (ExcelUploadService.isValidExcelFile(file)) {
             try {
