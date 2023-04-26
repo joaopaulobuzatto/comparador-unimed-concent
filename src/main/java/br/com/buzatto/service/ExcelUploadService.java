@@ -101,7 +101,7 @@ public class ExcelUploadService {
             DataFormatter dataFormatter = new DataFormatter();
             int rowIndex = 0;
             for (Row row : sheet) {
-                if (rowIndex == 0) {
+                if (rowIndex == 0 || rowIndex == 1 || rowIndex == 2) {
                     rowIndex++;
                     continue;
                 }
@@ -111,13 +111,12 @@ public class ExcelUploadService {
                 while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
                     switch (cellIndex) {
-                        case 2 -> item.setRequisicao(dataFormatter.formatCellValue(row.getCell(cellIndex)));
-                        case 4 -> item.setBeneficiario(dataFormatter.formatCellValue(row.getCell(cellIndex)).trim());
-                        case 9 -> item.setGuia(dataFormatter.formatCellValue(row.getCell(cellIndex)));
-                        case 10 -> item.setCarteirinha(dataFormatter.formatCellValue(row.getCell(cellIndex)));
-                        case 11 -> item.setCodigo(dataFormatter.formatCellValue(row.getCell(cellIndex)));
-                        case 12 -> item.setDescricao(dataFormatter.formatCellValue(row.getCell(cellIndex)).trim());
-                        case 14 -> item.setQuantidade(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        case 0 -> item.setBeneficiario(dataFormatter.formatCellValue(row.getCell(cellIndex)).trim());
+                        case 2 -> item.setCodigo(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        case 3 -> item.setDescricao(dataFormatter.formatCellValue(row.getCell(cellIndex)).trim());
+                        case 6 -> item.setCarteirinha(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        case 7 -> item.setRequisicao(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        case 8 -> item.setGuia(dataFormatter.formatCellValue(row.getCell(cellIndex)));
                         default -> {
                         }
                     }
