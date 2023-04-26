@@ -57,7 +57,7 @@ public class ItemService {
 
         response.setTotalItensNetRisProcessados((long) itensNetRis.size());
         response.setTotalItensNetRisComDivergencia((long) itensDivergenteOrigemNetRis.size());
-        response.setTotalItensNetRisComSucesso(response.getTotalItensConcentProcessados() - response.getTotalItensConcentComDivergencia());
+        response.setTotalItensNetRisComSucesso(response.getTotalItensNetRisProcessados() - response.getTotalItensNetRisComDivergencia());
         response.setItensDivergenteOrigemNetRis(itensDivergenteOrigemNetRis);
 
         return response;
