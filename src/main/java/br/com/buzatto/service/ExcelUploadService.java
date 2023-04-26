@@ -17,7 +17,7 @@ public class ExcelUploadService {
         return Objects.equals(file.getContentType(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     }
 
-    public static List<Item> getItensDataFromExcelUnimed(InputStream inputStream) {
+    public static List<Item> getItensFromRelatorioUnimed(InputStream inputStream) {
         List<Item> itens = new ArrayList<>();
         try {
             Workbook workbook = WorkbookFactory.create(inputStream);
@@ -55,7 +55,45 @@ public class ExcelUploadService {
         return itens;
     }
 
-    public static List<Item> getItensDataFromExcelConcent(InputStream inputStream) {
+    public static List<Item> getItensFromRelatorioConcent(InputStream inputStream) {
+        List<Item> itens = new ArrayList<>();
+        try {
+            Workbook workbook = WorkbookFactory.create(inputStream);
+            Sheet sheet = workbook.getSheetAt(0);
+            DataFormatter dataFormatter = new DataFormatter();
+            int rowIndex = 0;
+            for (Row row : sheet) {
+                if (rowIndex == 0) {
+                    rowIndex++;
+                    continue;
+                }
+                Iterator<Cell> cellIterator = row.iterator();
+                int cellIndex = 0;
+                Item item = new Item();
+                while (cellIterator.hasNext()) {
+                    Cell cell = cellIterator.next();
+                    switch (cellIndex) {
+                        case 2 -> item.setRequisicao(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        case 4 -> item.setBeneficiario(dataFormatter.formatCellValue(row.getCell(cellIndex)).trim());
+                        case 9 -> item.setGuia(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        case 10 -> item.setCarteirinha(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        case 11 -> item.setCodigo(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        case 12 -> item.setDescricao(dataFormatter.formatCellValue(row.getCell(cellIndex)).trim());
+                        case 14 -> item.setQuantidade(dataFormatter.formatCellValue(row.getCell(cellIndex)));
+                        default -> {
+                        }
+                    }
+                    cellIndex++;
+                }
+                itens.add(item);
+            }
+        } catch (IOException e) {
+            e.getStackTrace();
+        }
+        return itens;
+    }
+
+    public static List<Item> getItensFromRelatorioNetRis(InputStream inputStream) {
         List<Item> itens = new ArrayList<>();
         try {
             Workbook workbook = WorkbookFactory.create(inputStream);
