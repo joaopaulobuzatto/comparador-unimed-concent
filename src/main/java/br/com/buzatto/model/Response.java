@@ -15,6 +15,11 @@ public class Response {
     private Long totalItensConcentComDivergencia = 0L;
     private List<Item> itensDivergenteOrigemConcent = new ArrayList<>();
 
+    private Long totalItensNetRisProcessados = 0L;
+    private Long totalItensNetRisComSucesso = 0L;
+    private Long totalItensNetRisComDivergencia = 0L;
+    private List<Item> itensDivergenteOrigemNetRis = new ArrayList<>();
+
     public Long getTotalItensUnimedProcessados() {
         return totalItensUnimedProcessados;
     }
@@ -77,5 +82,37 @@ public class Response {
 
     public void setItensDivergenteOrigemConcent(List<Item> itensDivergenteOrigemConcent) {
         this.itensDivergenteOrigemConcent = itensDivergenteOrigemConcent;
+    }
+
+    public Long getTotalItensNetRisProcessados() {
+        return totalItensNetRisProcessados;
+    }
+
+    public void setTotalItensNetRisProcessados(Long totalItensNetRisProcessados) {
+        this.totalItensNetRisProcessados = totalItensNetRisProcessados;
+    }
+
+    public Long getTotalItensNetRisComSucesso() {
+        return totalItensNetRisComSucesso;
+    }
+
+    public void setTotalItensNetRisComSucesso(Long totalItensNetRisComSucesso) {
+        this.totalItensNetRisComSucesso = totalItensNetRisComSucesso;
+    }
+
+    public Long getTotalItensNetRisComDivergencia() {
+        return totalItensNetRisComDivergencia;
+    }
+
+    public void setTotalItensNetRisComDivergencia(Long totalItensNetRisComDivergencia) {
+        this.totalItensNetRisComDivergencia = totalItensNetRisComDivergencia;
+    }
+
+    public List<Item> getItensDivergenteOrigemNetRis() {
+        return itensDivergenteOrigemNetRis;
+    }
+
+    public void setItensDivergenteOrigemNetRis(List<Item> itensDivergenteOrigemNetRis) {
+        this.itensDivergenteOrigemNetRis = itensDivergenteOrigemNetRis;
     }
 }

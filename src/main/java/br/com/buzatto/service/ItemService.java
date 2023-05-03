@@ -19,13 +19,13 @@ public class ItemService {
 
     private static final List<String> CODIGOS_OBRIGATORIO_CONFERENCIA_MANUAL = List.of("40307255", "40307263");
 
-    public Response proccessFiles(MultipartFile fileUnimed, MultipartFile fileConcent) {
+    public Response comparaUnimedConcent(MultipartFile fileUnimed, MultipartFile fileConcent) {
         log.info("proccess files");
-        List<Item> itensUnimed = getItens(fileUnimed, true, false);
-        List<Item> itensConcent = getItens(fileConcent, false, true);
+        List<Item> itensUnimed = getItensFromRelatorio(fileUnimed, true, false, false);
+        List<Item> itensConcent = getItensFromRelatorio(fileConcent, false, true, false);
 
-        List<Item> itensDivergenteOrigemUnimed = getItensDivergente(itensUnimed, itensConcent, true, false);
-        List<Item> itensDivergenteOrigemConcent = getItensDivergente(itensUnimed, itensConcent, false, true);
+        List<Item> itensDivergenteOrigemUnimed = getItensDivergente(itensUnimed, itensConcent, true);
+        List<Item> itensDivergenteOrigemConcent = getItensDivergente(itensUnimed, itensConcent, false);
 
         Response response = new Response();
         response.setTotalItensUnimedProcessados((long) itensUnimed.size());
@@ -41,32 +41,50 @@ public class ItemService {
         return response;
     }
 
-    private List<Item> getItensDivergente(List<Item> itensUnimed, List<Item> itensConcent, boolean isOrigemUnimed, boolean isOrigemConcent) {
-        log.info("get itens divergente");
-        List<Item> itensDivergente = new ArrayList<>();
-        if (isOrigemUnimed) {
-            itensDivergente = getItensDivergente(itensUnimed, itensConcent);
-        } else if (isOrigemConcent) {
-            itensDivergente = getItensDivergente(itensConcent, itensUnimed);
-        }
-        return itensDivergente;
+    public Response comparaUnimedNetris(MultipartFile fileUnimed, MultipartFile fileNetRis) {
+        log.info("compara unimed netris");
+        List<Item> itensUnimed = getItensFromRelatorio(fileUnimed, true, false, false);
+        List<Item> itensNetRis = getItensFromRelatorio(fileNetRis, false, false, true);
+
+        List<Item> itensDivergenteOrigemUnimed = getItensDivergente(itensUnimed, itensNetRis, true);
+        List<Item> itensDivergenteOrigemNetRis = getItensDivergente(itensUnimed, itensNetRis, false);
+
+        Response response = new Response();
+        response.setTotalItensUnimedProcessados((long) itensUnimed.size());
+        response.setTotalItensUnimedComDivergencia((long) itensDivergenteOrigemUnimed.size());
+        response.setTotalItensUnimedComSucesso(response.getTotalItensUnimedProcessados() - response.getTotalItensUnimedComDivergencia());
+        response.setItensDivergenteOrigemUnimed(itensDivergenteOrigemUnimed);
+
+        response.setTotalItensNetRisProcessados((long) itensNetRis.size());
+        response.setTotalItensNetRisComDivergencia((long) itensDivergenteOrigemNetRis.size());
+        response.setTotalItensNetRisComSucesso(response.getTotalItensNetRisProcessados() - response.getTotalItensNetRisComDivergencia());
+        response.setItensDivergenteOrigemNetRis(itensDivergenteOrigemNetRis);
+
+        return response;
     }
 
-    public List<Item> getItensDivergente(List<Item> itensOrigem, List<Item> itensConsulta) {
+    private List<Item> getItensDivergente(List<Item> itensUnimed, List<Item> itensComparacao, boolean isOrigemUnimed) {
+        log.info("get itens divergente");
+        return isOrigemUnimed
+                ? getItensDivergente(itensUnimed, itensComparacao)
+                : getItensDivergente(itensComparacao, itensUnimed);
+    }
+
+    public List<Item> getItensDivergente(List<Item> itensOrigem, List<Item> itensComparacao) {
         log.info("get itens divergente");
         List<Item> itens = new ArrayList<>();
         for (Item itemOrigem : itensOrigem) {
             if (CODIGOS_OBRIGATORIO_CONFERENCIA_MANUAL.contains(itemOrigem.getCodigo())) {
                 itens.add(itemOrigem);
             } else {
-                boolean itemOrigemExisteNosItensConsulta = itensConsulta.stream()
+                boolean itemOrigemExisteNosItensConsulta = itensComparacao.stream()
                         .anyMatch(itemConsulta -> itemConsulta.getCodigo().equals(itemOrigem.getCodigo())
                                 && itemConsulta.getGuia().equals(itemOrigem.getGuia()));
 
                 if (!itemOrigemExisteNosItensConsulta) {
                     for (String variacao : Exame.getVariacoesByCodigo(itemOrigem.getCodigo())) {
                         if (!itemOrigemExisteNosItensConsulta) {
-                            itemOrigemExisteNosItensConsulta = itensConsulta.stream()
+                            itemOrigemExisteNosItensConsulta = itensComparacao.stream()
                                     .anyMatch(itemConsulta -> itemConsulta.getCodigo().equals(variacao)
                                             && itemConsulta.getGuia().equals(itemOrigem.getGuia()));
                         }
@@ -81,15 +99,17 @@ public class ItemService {
         return itens;
     }
 
-    private List<Item> getItens(MultipartFile file, boolean isUnimed, boolean isConcent) {
+    private List<Item> getItensFromRelatorio(MultipartFile file, boolean isUnimed, boolean isConcent, boolean isNetRis) {
         log.info("get itens");
         List<Item> itens = new ArrayList<>();
         if (ExcelUploadService.isValidExcelFile(file)) {
             try {
                 if (isUnimed) {
-                    itens = ExcelUploadService.getItensDataFromExcelUnimed(file.getInputStream());
+                    itens = ExcelUploadService.getItensFromRelatorioUnimed(file.getInputStream());
                 } else if (isConcent) {
-                    itens = ExcelUploadService.getItensDataFromExcelConcent(file.getInputStream());
+                    itens = ExcelUploadService.getItensFromRelatorioConcent(file.getInputStream());
+                } else if (isNetRis) {
+                    itens = ExcelUploadService.getItensFromRelatorioNetRis(file.getInputStream());
                 }
             } catch (IOException e) {
                 throw new IllegalArgumentException("The file is not a valid excel");

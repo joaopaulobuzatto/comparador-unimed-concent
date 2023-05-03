@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/itens")
 public class ItemController {
 
     private final ItemService itemService;
@@ -18,9 +18,15 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @PostMapping("/proccess-files")
-    public Response proccessFiles(@RequestParam("fileUnimed") MultipartFile fileUnimed,
-                                  @RequestParam("fileConcent") MultipartFile fileConcent) {
-        return this.itemService.proccessFiles(fileUnimed, fileConcent);
+    @PostMapping("/compara-unimed-concent")
+    public Response comparaUnimedConcent(@RequestParam("fileUnimed") MultipartFile fileUnimed,
+                                         @RequestParam("fileConcent") MultipartFile fileConcent) {
+        return this.itemService.comparaUnimedConcent(fileUnimed, fileConcent);
+    }
+
+    @PostMapping("/compara-unimed-netris")
+    public Response comparaUnimedNetris(@RequestParam("fileUnimed") MultipartFile fileUnimed,
+                                        @RequestParam("fileNetRis") MultipartFile fileNetRis) {
+        return this.itemService.comparaUnimedNetris(fileUnimed, fileNetRis);
     }
 }
